@@ -1,0 +1,332 @@
+\documentclass[]{article}
+\usepackage{lmodern}
+\usepackage{amssymb,amsmath}
+\usepackage{ifxetex,ifluatex}
+\usepackage{fixltx2e} % provides \textsubscript
+\ifnum 0\ifxetex 1\fi\ifluatex 1\fi=0 % if pdftex
+  \usepackage[T1]{fontenc}
+  \usepackage[utf8]{inputenc}
+\else % if luatex or xelatex
+  \ifxetex
+    \usepackage{mathspec}
+  \else
+    \usepackage{fontspec}
+  \fi
+  \defaultfontfeatures{Ligatures=TeX,Scale=MatchLowercase}
+\fi
+% use upquote if available, for straight quotes in verbatim environments
+\IfFileExists{upquote.sty}{\usepackage{upquote}}{}
+% use microtype if available
+\IfFileExists{microtype.sty}{%
+\usepackage{microtype}
+\UseMicrotypeSet[protrusion]{basicmath} % disable protrusion for tt fonts
+}{}
+\usepackage[margin=1in]{geometry}
+\usepackage{hyperref}
+\hypersetup{unicode=true,
+            pdfborder={0 0 0},
+            breaklinks=true}
+\urlstyle{same}  % don't use monospace font for urls
+\usepackage{color}
+\usepackage{fancyvrb}
+\newcommand{\VerbBar}{|}
+\newcommand{\VERB}{\Verb[commandchars=\\\{\}]}
+\DefineVerbatimEnvironment{Highlighting}{Verbatim}{commandchars=\\\{\}}
+% Add ',fontsize=\small' for more characters per line
+\usepackage{framed}
+\definecolor{shadecolor}{RGB}{248,248,248}
+\newenvironment{Shaded}{\begin{snugshade}}{\end{snugshade}}
+\newcommand{\AlertTok}[1]{\textcolor[rgb]{0.94,0.16,0.16}{#1}}
+\newcommand{\AnnotationTok}[1]{\textcolor[rgb]{0.56,0.35,0.01}{\textbf{\textit{#1}}}}
+\newcommand{\AttributeTok}[1]{\textcolor[rgb]{0.77,0.63,0.00}{#1}}
+\newcommand{\BaseNTok}[1]{\textcolor[rgb]{0.00,0.00,0.81}{#1}}
+\newcommand{\BuiltInTok}[1]{#1}
+\newcommand{\CharTok}[1]{\textcolor[rgb]{0.31,0.60,0.02}{#1}}
+\newcommand{\CommentTok}[1]{\textcolor[rgb]{0.56,0.35,0.01}{\textit{#1}}}
+\newcommand{\CommentVarTok}[1]{\textcolor[rgb]{0.56,0.35,0.01}{\textbf{\textit{#1}}}}
+\newcommand{\ConstantTok}[1]{\textcolor[rgb]{0.00,0.00,0.00}{#1}}
+\newcommand{\ControlFlowTok}[1]{\textcolor[rgb]{0.13,0.29,0.53}{\textbf{#1}}}
+\newcommand{\DataTypeTok}[1]{\textcolor[rgb]{0.13,0.29,0.53}{#1}}
+\newcommand{\DecValTok}[1]{\textcolor[rgb]{0.00,0.00,0.81}{#1}}
+\newcommand{\DocumentationTok}[1]{\textcolor[rgb]{0.56,0.35,0.01}{\textbf{\textit{#1}}}}
+\newcommand{\ErrorTok}[1]{\textcolor[rgb]{0.64,0.00,0.00}{\textbf{#1}}}
+\newcommand{\ExtensionTok}[1]{#1}
+\newcommand{\FloatTok}[1]{\textcolor[rgb]{0.00,0.00,0.81}{#1}}
+\newcommand{\FunctionTok}[1]{\textcolor[rgb]{0.00,0.00,0.00}{#1}}
+\newcommand{\ImportTok}[1]{#1}
+\newcommand{\InformationTok}[1]{\textcolor[rgb]{0.56,0.35,0.01}{\textbf{\textit{#1}}}}
+\newcommand{\KeywordTok}[1]{\textcolor[rgb]{0.13,0.29,0.53}{\textbf{#1}}}
+\newcommand{\NormalTok}[1]{#1}
+\newcommand{\OperatorTok}[1]{\textcolor[rgb]{0.81,0.36,0.00}{\textbf{#1}}}
+\newcommand{\OtherTok}[1]{\textcolor[rgb]{0.56,0.35,0.01}{#1}}
+\newcommand{\PreprocessorTok}[1]{\textcolor[rgb]{0.56,0.35,0.01}{\textit{#1}}}
+\newcommand{\RegionMarkerTok}[1]{#1}
+\newcommand{\SpecialCharTok}[1]{\textcolor[rgb]{0.00,0.00,0.00}{#1}}
+\newcommand{\SpecialStringTok}[1]{\textcolor[rgb]{0.31,0.60,0.02}{#1}}
+\newcommand{\StringTok}[1]{\textcolor[rgb]{0.31,0.60,0.02}{#1}}
+\newcommand{\VariableTok}[1]{\textcolor[rgb]{0.00,0.00,0.00}{#1}}
+\newcommand{\VerbatimStringTok}[1]{\textcolor[rgb]{0.31,0.60,0.02}{#1}}
+\newcommand{\WarningTok}[1]{\textcolor[rgb]{0.56,0.35,0.01}{\textbf{\textit{#1}}}}
+\usepackage{graphicx,grffile}
+\makeatletter
+\def\maxwidth{\ifdim\Gin@nat@width>\linewidth\linewidth\else\Gin@nat@width\fi}
+\def\maxheight{\ifdim\Gin@nat@height>\textheight\textheight\else\Gin@nat@height\fi}
+\makeatother
+% Scale images if necessary, so that they will not overflow the page
+% margins by default, and it is still possible to overwrite the defaults
+% using explicit options in \includegraphics[width, height, ...]{}
+\setkeys{Gin}{width=\maxwidth,height=\maxheight,keepaspectratio}
+\IfFileExists{parskip.sty}{%
+\usepackage{parskip}
+}{% else
+\setlength{\parindent}{0pt}
+\setlength{\parskip}{6pt plus 2pt minus 1pt}
+}
+\setlength{\emergencystretch}{3em}  % prevent overfull lines
+\providecommand{\tightlist}{%
+  \setlength{\itemsep}{0pt}\setlength{\parskip}{0pt}}
+\setcounter{secnumdepth}{0}
+% Redefines (sub)paragraphs to behave more like sections
+\ifx\paragraph\undefined\else
+\let\oldparagraph\paragraph
+\renewcommand{\paragraph}[1]{\oldparagraph{#1}\mbox{}}
+\fi
+\ifx\subparagraph\undefined\else
+\let\oldsubparagraph\subparagraph
+\renewcommand{\subparagraph}[1]{\oldsubparagraph{#1}\mbox{}}
+\fi
+
+%%% Use protect on footnotes to avoid problems with footnotes in titles
+\let\rmarkdownfootnote\footnote%
+\def\footnote{\protect\rmarkdownfootnote}
+
+%%% Change title format to be more compact
+\usepackage{titling}
+
+% Create subtitle command for use in maketitle
+\providecommand{\subtitle}[1]{
+  \posttitle{
+    \begin{center}\large#1\end{center}
+    }
+}
+
+\setlength{\droptitle}{-2em}
+
+  \title{}
+    \pretitle{\vspace{\droptitle}}
+  \posttitle{}
+    \author{}
+    \preauthor{}\postauthor{}
+    \date{}
+    \predate{}\postdate{}
+  
+
+\begin{document}
+
+---git title: ``Possible data sets'' author: ``COL'' date:
+``11/12/2019'' output: html\_document ---
+
+\href{https://inflationdata.com/Inflation/Consumer_Price_Index/HistoricalCPI.aspx?reloaded=true}{Here's
+a cool link, probably going to have to use the methods found in
+imdbscrape.Rmd to get the data}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\CommentTok{#This was originally an xls file, and I had to do a lot of heckery to make it look pretty}
+\CommentTok{#but I converted it to a csv.}
+\CommentTok{#It has data from a few US regions (as well as the US as a whole) spanning 43 years}
+
+\CommentTok{# Source: U.S. Bureau of the Census, Current Population Survey, Annual Social and Economic Supplements. For information on confidentiality protection, sampling error, nonsampling error, and definitions, see <www2.census.gov/programs-surveys/cps/techdocs/cpsmar19.pdf>.                    }
+\CommentTok{# Footnotes are available at <www.census.gov/topics/income-poverty/income/guidance/cps-historic-footnotes.html>.                    }
+
+\NormalTok{raw_income <-}\StringTok{ }\KeywordTok{read_csv}\NormalTok{(}\StringTok{"Income.csv"}\NormalTok{)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## Parsed with column specification:
+## cols(
+##   year = col_double(),
+##   num_households_thousand = col_number(),
+##   median_income = col_number(),
+##   median_equiv_2018 = col_number(),
+##   mean_income = col_number(),
+##   mean_equiv_2018 = col_number(),
+##   region = col_character()
+## )
+\end{verbatim}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{income_tibble <-}\StringTok{ }\KeywordTok{as_tibble}\NormalTok{(raw_income)}
+\NormalTok{income_tibble}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## # A tibble: 230 x 7
+##     year num_households_~ median_income median_equiv_20~ mean_income
+##    <dbl>            <dbl>         <dbl>            <dbl>       <dbl>
+##  1  2018           128579         63179            63179       90021
+##  2  2017           127669         61136            62626       87643
+##  3  2017           127586         61372            62868       86220
+##  4  2016           126224         59039            61779       83143
+##  5  2015           125819         56516            59901       79263
+##  6  2014           124587         53657            56969       75738
+##  7  2013           123931         53585            57856       75195
+##  8  2013           122952         51939            56079       72641
+##  9  2012           122459         51017            55900       71274
+## 10  2011           121084         50054            56006       69677
+## # ... with 220 more rows, and 2 more variables: mean_equiv_2018 <dbl>,
+## #   region <chr>
+\end{verbatim}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{income_tibble }\OperatorTok{%>%}
+\StringTok{  }\KeywordTok{ggplot}\NormalTok{(}\KeywordTok{aes}\NormalTok{(year,median_equiv_}\DecValTok{2018}\NormalTok{)) }\OperatorTok{+}
+\StringTok{  }\KeywordTok{geom_point}\NormalTok{(}\KeywordTok{aes}\NormalTok{(}\DataTypeTok{color =}\NormalTok{ region), }\DataTypeTok{size =} \DecValTok{3}\NormalTok{) }\OperatorTok{+}
+\StringTok{  }\KeywordTok{geom_smooth}\NormalTok{(}\KeywordTok{aes}\NormalTok{(}\DataTypeTok{color =}\NormalTok{ region), }\DataTypeTok{method =} \StringTok{"lm"}\NormalTok{, }\DataTypeTok{se =} \OtherTok{FALSE}\NormalTok{) }\OperatorTok{+}
+\StringTok{  }\KeywordTok{labs}\NormalTok{(}\DataTypeTok{x =} \StringTok{"Year"}\NormalTok{, }\DataTypeTok{y =} \StringTok{"2018 Equivalent USD"}\NormalTok{)}
+\end{Highlighting}
+\end{Shaded}
+
+\includegraphics{datasets_files/figure-latex/income-1.pdf}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\CommentTok{# A general note: from this website https://www.epi.org/resources/budget/}
+\CommentTok{# This number was pulled}
+
+\NormalTok{Minneapolis_median <-}\StringTok{ }\DecValTok{36972}
+
+
+\NormalTok{CPI <-}\StringTok{ }\KeywordTok{read_html}\NormalTok{(}\StringTok{"https://inflationdata.com/Inflation/Consumer_Price_Index/HistoricalCPI.aspx?reloaded=true"}\NormalTok{)}
+\NormalTok{tables <-}\StringTok{ }\KeywordTok{html_nodes}\NormalTok{(CPI, }\DataTypeTok{css =} \StringTok{"table"}\NormalTok{) }
+
+\NormalTok{CPI_data <-}\StringTok{ }\KeywordTok{html_table}\NormalTok{(tables, }\DataTypeTok{header =} \OtherTok{FALSE}\NormalTok{, }\DataTypeTok{fill =} \OtherTok{TRUE}\NormalTok{)[[}\DecValTok{1}\NormalTok{]]}
+
+\NormalTok{CPI_tibble <-}\StringTok{ }\KeywordTok{as_tibble}\NormalTok{(CPI_data) }\OperatorTok{%>%}
+\StringTok{  }\KeywordTok{filter}\NormalTok{(}\KeywordTok{row_number}\NormalTok{() }\OperatorTok{!=}\StringTok{ }\DecValTok{1}\NormalTok{) }\OperatorTok{%>%}
+\StringTok{  }\KeywordTok{rename}\NormalTok{(}\DataTypeTok{year =}\NormalTok{ X1, }\DataTypeTok{Jan =}\NormalTok{ X2, }\DataTypeTok{Feb =}\NormalTok{ X3, }\DataTypeTok{Mar =}\NormalTok{ X4, }\DataTypeTok{Apr =}\NormalTok{ X5,}
+         \DataTypeTok{May =}\NormalTok{ X6, }\DataTypeTok{Jun =}\NormalTok{ X7, }\DataTypeTok{Jul =}\NormalTok{ X8, }\DataTypeTok{Aug =}\NormalTok{ X9, }\DataTypeTok{Sep =}\NormalTok{ X10, }\DataTypeTok{Oct =}\NormalTok{ X11, }\DataTypeTok{Nov =}\NormalTok{ X12, }\DataTypeTok{Dec =}\NormalTok{ X13, }\DataTypeTok{average =}\NormalTok{ X14)}
+
+\ControlFlowTok{for}\NormalTok{(i }\ControlFlowTok{in} \KeywordTok{seq_along}\NormalTok{(CPI_tibble)) \{}
+\NormalTok{  CPI_tibble[[i]] <-}\StringTok{ }\KeywordTok{parse_number}\NormalTok{(CPI_tibble[[i]], }\DataTypeTok{na =} \StringTok{""}\NormalTok{)}
+\NormalTok{\}}
+
+\NormalTok{CPI_tibble }\OperatorTok{%>%}
+\StringTok{  }\KeywordTok{filter}\NormalTok{(}\OperatorTok{!}\KeywordTok{is.na}\NormalTok{(average)) }\OperatorTok{%>%}
+\StringTok{  }\KeywordTok{ggplot}\NormalTok{(}\KeywordTok{aes}\NormalTok{(year, average)) }\OperatorTok{+}
+\StringTok{  }\KeywordTok{geom_point}\NormalTok{()}
+\end{Highlighting}
+\end{Shaded}
+
+\includegraphics{datasets_files/figure-latex/CPI-1.pdf}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{minimum_raw <-}\StringTok{ }\KeywordTok{read_html}\NormalTok{(}\StringTok{"https://www.gobankingrates.com/making-money/economy/minimum-wage-year-were-born/#4"}\NormalTok{)}
+
+\NormalTok{minimum_data <-}\StringTok{ }\NormalTok{minimum_raw }\OperatorTok{%>%}
+\StringTok{  }\KeywordTok{html_nodes}\NormalTok{(}\StringTok{'.col-sm-10 h2 , h2+ ul li'}\NormalTok{) }\OperatorTok{%>%}\StringTok{ }
+\StringTok{  }\KeywordTok{html_text}\NormalTok{()}
+
+\NormalTok{minimum <-}\StringTok{ }\KeywordTok{str_sub}\NormalTok{(minimum_data,}\OperatorTok{-}\DecValTok{5}\NormalTok{,}\OperatorTok{-}\DecValTok{1}\NormalTok{)}
+
+\NormalTok{year <-}\StringTok{ }\DecValTok{0}
+\NormalTok{min <-}\StringTok{ }\DecValTok{0}
+\NormalTok{min_}\DecValTok{2018}\NormalTok{ <-}\StringTok{ }\DecValTok{0}
+\ControlFlowTok{for}\NormalTok{(i }\ControlFlowTok{in} \KeywordTok{seq}\NormalTok{(}\DecValTok{1}\NormalTok{, }\DecValTok{246}\NormalTok{, }\DecValTok{3}\NormalTok{))\{}
+\NormalTok{  year <-}\StringTok{ }\KeywordTok{c}\NormalTok{(year, }\KeywordTok{parse_number}\NormalTok{(minimum[i]))}
+\NormalTok{  min <-}\StringTok{ }\KeywordTok{c}\NormalTok{(min, }\KeywordTok{parse_number}\NormalTok{(minimum[i}\OperatorTok{+}\DecValTok{1}\NormalTok{]))}
+\NormalTok{  min_}\DecValTok{2018}\NormalTok{ <-}\StringTok{ }\KeywordTok{c}\NormalTok{(min_}\DecValTok{2018}\NormalTok{, }\KeywordTok{parse_number}\NormalTok{(minimum[i}\OperatorTok{+}\DecValTok{2}\NormalTok{]))}
+\NormalTok{\}}
+
+\NormalTok{min_tibble <-}\StringTok{ }\KeywordTok{as_tibble}\NormalTok{(year[}\DecValTok{2}\OperatorTok{:}\DecValTok{83}\NormalTok{]) }\OperatorTok{%>%}
+\StringTok{  }\KeywordTok{mutate}\NormalTok{(}\DataTypeTok{min =}\NormalTok{ min[}\DecValTok{2}\OperatorTok{:}\DecValTok{83}\NormalTok{], }\DataTypeTok{min_2018 =}\NormalTok{ min_}\DecValTok{2018}\NormalTok{[}\DecValTok{2}\OperatorTok{:}\DecValTok{83}\NormalTok{]) }\OperatorTok{%>%}
+\StringTok{  }\KeywordTok{rename}\NormalTok{(}\DataTypeTok{year =}\NormalTok{ value)}
+
+\NormalTok{min_tibble}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## # A tibble: 82 x 3
+##     year   min min_2018
+##    <dbl> <dbl>    <dbl>
+##  1  1938  0.25     4.51
+##  2  1939  0.3      5.49
+##  3  1940  0.3      5.53
+##  4  1941  0.3      5.45
+##  5  1942  0.3      4.89
+##  6  1943  0.3      4.55
+##  7  1944  0.3      4.42
+##  8  1945  0.4      5.76
+##  9  1946  0.4      5.63
+## 10  1947  0.4      4.77
+## # ... with 72 more rows
+\end{verbatim}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{everything <-}\StringTok{ }\NormalTok{CPI_tibble }\OperatorTok{%>%}
+\StringTok{  }\KeywordTok{select}\NormalTok{(year, average) }\OperatorTok{%>%}
+\StringTok{  }\KeywordTok{full_join}\NormalTok{(income_tibble, }\DataTypeTok{by =} \StringTok{"year"}\NormalTok{) }\OperatorTok{%>%}
+\StringTok{  }\KeywordTok{select}\NormalTok{(year, average, median_equiv_}\DecValTok{2018}\NormalTok{, region) }\OperatorTok{%>%}
+\StringTok{  }\KeywordTok{left_join}\NormalTok{(min_tibble, }\DataTypeTok{by =} \StringTok{"year"}\NormalTok{)}
+
+\NormalTok{everything}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## # A tibble: 293 x 6
+##     year average median_equiv_2018 region      min min_2018
+##    <dbl>   <dbl>             <dbl> <chr>     <dbl>    <dbl>
+##  1  2019     NA                 NA <NA>       7.25     7.25
+##  2  2018    251.             63179 US         7.25     7.49
+##  3  2018    251.             70113 Northeast  7.25     7.49
+##  4  2018    251.             64069 Midwest    7.25     7.49
+##  5  2018    251.             57299 South      7.25     7.49
+##  6  2018    251.             69520 West       7.25     7.49
+##  7  2017    245.             62626 US         7.25     7.65
+##  8  2017    245.             62868 US         7.25     7.65
+##  9  2017    245.             67192 Northeast  7.25     7.65
+## 10  2017    245.             68070 Northeast  7.25     7.65
+## # ... with 283 more rows
+\end{verbatim}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{everything }\OperatorTok{%>%}
+\StringTok{  }\KeywordTok{filter}\NormalTok{(year }\OperatorTok{>}\StringTok{ }\DecValTok{1937}\NormalTok{) }\OperatorTok{%>%}
+\StringTok{  }\KeywordTok{ggplot}\NormalTok{(}\KeywordTok{aes}\NormalTok{(year, median_equiv_}\DecValTok{2018}\NormalTok{)) }\OperatorTok{+}
+\StringTok{  }\KeywordTok{geom_point}\NormalTok{(}\DataTypeTok{color =} \StringTok{"forestgreen"}\NormalTok{) }\OperatorTok{+}
+\StringTok{  }\KeywordTok{geom_smooth}\NormalTok{(}\DataTypeTok{color =} \StringTok{"forestgreen"}\NormalTok{) }\OperatorTok{+}
+\StringTok{  }\KeywordTok{geom_point}\NormalTok{(}\DataTypeTok{color =} \StringTok{"red"}\NormalTok{, }\KeywordTok{aes}\NormalTok{(year, min_}\DecValTok{2018} \OperatorTok{*}\StringTok{ }\DecValTok{48} \OperatorTok{*}\StringTok{ }\DecValTok{40}\NormalTok{)) }\OperatorTok{+}
+\StringTok{  }\KeywordTok{geom_smooth}\NormalTok{(}\DataTypeTok{color =} \StringTok{"red"}\NormalTok{, }\KeywordTok{aes}\NormalTok{(year, min_}\DecValTok{2018} \OperatorTok{*}\StringTok{ }\DecValTok{48} \OperatorTok{*}\StringTok{ }\DecValTok{40}\NormalTok{)) }\OperatorTok{+}
+\StringTok{  }\KeywordTok{labs}\NormalTok{(}\DataTypeTok{x =} \StringTok{"year"}\NormalTok{, }\DataTypeTok{y =} \StringTok{"2018 equivalent USD"}\NormalTok{)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## `geom_smooth()` using method = 'loess' and formula 'y ~ x'
+\end{verbatim}
+
+\begin{verbatim}
+## Warning: Removed 38 rows containing non-finite values (stat_smooth).
+\end{verbatim}
+
+\begin{verbatim}
+## `geom_smooth()` using method = 'loess' and formula 'y ~ x'
+\end{verbatim}
+
+\begin{verbatim}
+## Warning: Removed 38 rows containing missing values (geom_point).
+\end{verbatim}
+
+\includegraphics{datasets_files/figure-latex/merge time-1.pdf}
+
+
+\end{document}

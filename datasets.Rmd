@@ -1,0 +1,151 @@
+---
+output: html_document
+editor_options: 
+  chunk_output_type: console
+---
+---git 
+title: "Possible data sets"
+author: "COL"
+date: "11/12/2019"
+output: html_document
+---
+
+```{r, setup, include=FALSE}
+library(tidyverse)
+library(stringr)
+library(rvest)
+library(httr)
+library(stringr)
+```
+
+
+We scraped data from [Link_name_inflationdata](https://inflationdata.com/Inflation/Consumer_Price_Index/HistoricalCPI.aspx?reloaded=true)
+
+
+
+```{r income}
+
+#This was originally an xls file, and I had to do a lot of heckery to make it look pretty
+#but I converted it to a csv.
+#It has data from a few US regions (as well as the US as a whole) spanning 43 years
+
+# Source: U.S. Bureau of the Census, Current Population Survey, Annual Social and Economic Supplements. For information on confidentiality protection, sampling error, nonsampling error, and definitions, see <www2.census.gov/programs-surveys/cps/techdocs/cpsmar19.pdf>.					
+# Footnotes are available at <www.census.gov/topics/income-poverty/income/guidance/cps-historic-footnotes.html>.					
+
+raw_income <- read_csv("data/Income.csv")
+income_tibble <- as_tibble(raw_income)
+income_tibble
+income_tibble %>%
+  ggplot(aes(year,median_equiv_2018)) +
+  geom_point(aes(color = region), size = 3) +
+  geom_smooth(aes(color = region), method = "lm", se = FALSE) +
+  labs(x = "Year", y = "2018 Equivalent USD")
+  
+```
+
+```{r CPI}
+# A general note: from this website https://www.epi.org/resources/budget/
+# This number was pulled
+
+Minneapolis_median <- 36972
+
+
+CPI <- read_html("https://inflationdata.com/Inflation/Consumer_Price_Index/HistoricalCPI.aspx?reloaded=true")
+tables <- html_nodes(CPI, css = "table") 
+
+CPI_data <- html_table(tables, header = FALSE, fill = TRUE)[[1]]
+
+CPI_tibble <- as_tibble(CPI_data) %>%
+  filter(row_number() != 1) %>%
+  rename(year = X1, Jan = X2, Feb = X3, Mar = X4, Apr = X5,
+         May = X6, Jun = X7, Jul = X8, Aug = X9, Sep = X10, Oct = X11, Nov = X12, Dec = X13, average = X14)
+
+for(i in seq_along(CPI_tibble)) {
+  CPI_tibble[[i]] <- parse_number(CPI_tibble[[i]], na = "")
+}
+
+CPI_tibble %>%
+  filter(!is.na(average)) %>%
+  ggplot(aes(year, average)) +
+  geom_point() +
+  labs(x = "year", y = "CPI", title = "CPI level over time")
+
+# data from https://fred.stlouisfed.org/series/USSTHPI/#0
+rent_and_housing <- read.csv("data/rent_and_housing.csv")
+
+#Thanks StackOverflow for this line, this was a pain in the butt
+rent_and_housing <- data.frame(lapply(rent_and_housing, as.character), stringsAsFactors=FALSE)
+
+rent_housing_tibble <- as_tibble(rent_and_housing) %>%
+  mutate(house_price_CPI = ifelse(house_price_CPI == ".", NA, house_price_CPI),
+         rent_CPI = ifelse(rent_CPI == ".", NA, rent_CPI))
+
+
+rent_housing_tibble$date <- parse_number(str_sub(rent_housing_tibble$date, -4, -1))
+rent_housing_tibble <- rent_housing_tibble %>%
+  rename(year = date)
+rent_housing_tibble$house_price_CPI <- parse_number(rent_housing_tibble$house_price_CPI)
+rent_housing_tibble$rent_CPI <- parse_number(rent_housing_tibble$rent_CPI)
+
+rent_housing_tibble %>%
+  ggplot(aes(year, house_price_CPI)) +
+  geom_point() +
+  geom_point(aes(y = rent_CPI))
+
+CPIs <- rent_housing_tibble %>%
+  left_join(CPI_tibble, by = "year")
+
+write_csv(CPIs, "data/CPIs.csv")
+
+```
+
+
+```{r minimum, warning = F}
+minimum_raw <- read_html("https://www.gobankingrates.com/making-money/economy/minimum-wage-year-were-born/#4")
+
+minimum_data <- minimum_raw %>%
+  html_nodes('.col-sm-10 h2 , h2+ ul li') %>% 
+  html_text()
+
+minimum <- str_sub(minimum_data,-5,-1)
+
+year <- 0
+min <- 0
+min_2018 <- 0
+for(i in seq(1, 246, 3)){
+  year <- c(year, parse_number(minimum[i]))
+  min <- c(min, parse_number(minimum[i+1]))
+  min_2018 <- c(min_2018, parse_number(minimum[i+2]))
+}
+
+min_tibble <- as_tibble(year[2:83]) %>%
+  mutate(min = min[2:83], min_2018 = min_2018[2:83]) %>%
+  rename(year = value)
+
+min_tibble
+```
+
+```{r merge time, warning=FALSE}
+
+everything <- CPI_tibble %>%
+  select(year, average) %>%
+  full_join(income_tibble, by = "year") %>%
+  select(year, average, median_equiv_2018, region) %>%
+  left_join(min_tibble, by = "year")
+
+view(everything)
+
+everything %>%
+  mutate(region = ifelse(is.na(region), "US", region)) %>%
+  filter(year > 1935, region == "US") %>%
+  ggplot(aes(year, median_equiv_2018)) +
+  geom_point(color = "forestgreen") +
+  geom_smooth(color = "forestgreen") +
+  geom_point(color = "red", aes(year, min_2018 * 48 * 40)) +
+  geom_smooth(color = "red", aes(year, min_2018 * 48 * 40)) +
+  labs(x = "year", y = "2018 equivalent USD", title = "median and minimum yearly income")
+
+
+write_csv(everything, "everything.csv")
+
+```

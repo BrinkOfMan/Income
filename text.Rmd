@@ -1,0 +1,12 @@
+---
+title: "text"
+author: "COL"
+date: "12/9/2019"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+For our project we wanted to analyze the relationships between wage and price data over time. We used CPI (consumer price index) values to measure the cost of living over time. To obtain this data, we scraped from [gobakingrates.com](https://www.gobankingrates.com/making-money/economy/minimum-wage-year-were-born/#4), [inflationdata.com](https://inflationdata.com/Inflation/Consumer_Price_Index/HistoricalCPI.aspx?reloaded=true) and downloaded excel spreadsheets or CSVs from [census.gov](https://www.census.gov/topics/income-poverty/income/guidance/cps-historic-footnotes.html#), [fred.stlousfed.org](https://fred.stlouisfed.org/series/USSTHPI/#0), and [bls.gov](https://www.bls.gov). From these sources, we obtained variables for housing, rent, and general CPI, as well as median and minimum income levels for the past 100-or-so years. We analyzed trends for the three CPI levels and income levels, as well as noting the drastic differences between CPI and income, as well as the divergence in income. We also saw that 1975 was a divergence point from gradual increase in CPI to drastic change, although we aren't sure why this drastic change occurs. 

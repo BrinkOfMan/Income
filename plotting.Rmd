@@ -1,0 +1,118 @@
+---
+title: "Cost of Living and Income Levels in the United States"
+author: "Ethan and Will"
+date: "12/10/2019"
+output:
+  html_document:
+    fig_width: 9
+    df_print: paged
+editor_options:
+  chunk_output_type: console
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+
+library(tidyverse)
+library(stringr)
+library(ggplot2)
+library(plotly)
+library(scales)
+everything <- read_csv("~/MSCS/data/everything.csv")
+```
+
+For our project we wanted to analyze the relationships between wage and price data over time. We used CPI (consumer price index) values to measure the cost of living over time. To obtain this data, we scraped from [gobakingrates.com](https://www.gobankingrates.com/making-money/economy/minimum-wage-year-were-born/#4), [inflationdata.com](https://inflationdata.com/Inflation/Consumer_Price_Index/HistoricalCPI.aspx?reloaded=true) and downloaded excel spreadsheets or CSVs from [census.gov](https://www.census.gov/topics/income-poverty/income/guidance/cps-historic-footnotes.html#), [fred.stlousfed.org](https://fred.stlouisfed.org/series/USSTHPI/#0), and [bls.gov](https://www.bls.gov). From these sources, we obtained variables for housing, rent, and general CPI, as well as median and minimum income levels for the past 100-or-so years. We analyzed trends for the three CPI levels and income levels, as well as noting the drastic differences between CPI and income, as well as the divergence in income. We also saw that 1975 was a divergence point from gradual increase in CPI to drastic change, although we aren't sure why this drastic change occurs. 
+
+```{r, echo=FALSE, warning=FALSE}
+
+ plot <- everything %>%
+  mutate(region = ifelse(is.na(region), "US", region)) %>%
+  filter(year > 1937, region == "US") %>%
+  ggplot(aes(year, median_equiv_2018)) +
+  geom_point(aes(color = "Median")) +
+  geom_smooth(method = "loess", aes(color = "Median")) +
+  geom_point(aes(year, min_2018 * 48 * 40, color = "Minimum")) +
+  geom_smooth(method = "loess", aes(x = year, y = min_2018 * 48 * 40, color = "Minimum")) +
+  labs(x = "year", y = "2018 equivalent USD", title = "US wages over time") +
+  scale_colour_manual(name="Income level",
+    values=c(Median="forestgreen", Minimum="red"))
+
+ggplotly(plot)
+
+plot <- everything %>%
+  filter(year > 1975,
+         region %in% c("US", NA)) %>%
+  ggplot(aes(year, median_equiv_2018)) +
+  geom_point(aes(color = "Median")) +
+  geom_smooth(method = "lm", aes(color = "Median")) +
+  geom_point(aes(year, min_2018 * 48 * 40, color = "Minimum")) +
+  geom_smooth(method = "lm", aes(year, min_2018 * 48 * 40, color = "Minimum")) +
+  labs(x = "year", y = "2018 equivalent USD") +
+  scale_colour_manual(name="Income level",
+    values=c(Median="forestgreen", Minimum="red"))
+
+ggplotly(plot)
+```
+These two plots show the recent disparity in income change over time. The median income level has been steadily increasing since 1975, with minimum wage income dipping and remaining stagnant since 1975, despite showing great growth from 1940 - 1975.
+```{r, echo=FALSE, warning=FALSE}
+plot <- everything %>%
+  mutate(relative_power = min / average) %>%
+  filter(year > 1975, region %in% c("US", NA)) %>%
+  ggplot(aes(year, relative_power)) + 
+  geom_point() + 
+  geom_smooth(method = "lm") +
+  labs(title = "Buying power of minimum wage over time", y = "Buying power") +
+  theme(axis.text.y=element_blank(), axis.ticks.y=element_blank())
+
+ggplotly(plot)
+```
+Dividing the minimum wage by the cost of living, we can see how the buying power with a minimum wage income has not been continually increasing, but rather decreasing or remaining relatively unchanged.
+
+```{r all cpi, warning=FALSE, echo=FALSE}
+#may be proper to move much of this into the datasets rmd then save the resulting data separately
+cpis <- read_csv("~/MSCS/data/CPIs.csv")
+income_tibble <- as_tibble(read_csv("~/MSCS/data/Income.csv"))
+plot <- cpis %>%
+  ggplot(aes(year)) +
+  geom_point(aes(y = rent_CPI, color = 'Rent')) + 
+  geom_point(aes(y  = average, color = 'General')) + 
+  geom_point(aes(y  = house_price_CPI, color = 'House')) + 
+  labs(x = "Year", y = "CPI", title = "Price levels over time", caption = "CPI reflects the average prices of goods in a year") +
+  scale_colour_manual(name="CPI type",
+    values=c(House="violet", Rent="red",General="blue"))
+  
+ggplotly(plot)
+```
+Here we see very little change in CPI levels up until 1975, followed by a rapid increase. One notable point is the housing market crisis, which is reflected by the suddent drop in house CPI levels following 2007 going into 2008. We also see that buying a house has become relatively less economically feasible compared to renting a space to live. Both have recently become more expensive compared to the general CPI, suggesting that the cost of living spaces has been increasing higher than other things in the United States.
+```{r, echo=FALSE, warning=FALSE}
+income_tibble <- income_tibble %>%
+  rename(Year = year)
+income <- income_tibble %>%
+  select(Year, median_income) %>%
+  rename(Median = median_income) %>%
+  mutate(Type = "Median Income")
+
+houses <- read_csv("data/houses.csv")
+house <- houses %>%
+  select(Year, Median) %>%
+  mutate(Type = "Median House Price")
+
+mins <- everything %>%
+  filter(year > 1962)
+tmp <- rbind(income, house)
+  
+plot <- tmp %>%
+  group_by(Type, Year) %>%
+  summarize(Median = mean(Median)) %>%
+  ggplot(aes(Year, Median, color = Type)) +
+  geom_point() + 
+  geom_point(data = mins, aes(year, min * 48 * 40, color = "Minimum Income")) +
+  labs(title = "Average income versus house price over time") +
+  scale_y_continuous(labels=dollar_format(prefix="$")) +
+  scale_colour_manual(name="Type",
+    values=c('Minimum Income'="violet", 'Median Income' = "blue", 'Median House Price' = "red"))
+  
+
+ggplotly(plot)
+```
+Here we can see the disparity between the median (not mininum) income level and housing price. It would take someone working at the median income level 3.3 years (considering they save all their money) to make enough money to buy a house (39,300 dollars at 11,800 dollars per year) compared to 5 years today (326,400 dollars at 64,800 dollars per year). For minimum wage, the amount of time needed to make the same amount of money is respectively 10 and 23 years.
